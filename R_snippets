@@ -1,0 +1,245 @@
+R statistics
+
+You need the data to be in "tall" format instead of "wide" for ggplot2. "wide" means having an observation per row with each variable as a different column (like you have now). You need to convert it to a "tall" format where you have a column that tells you the name of the variable and another column that tells you the value of the variable. The process of passing from wide to tall is usually called "melting". You can use tidyr::gather to melt your data frame:
+
+library(ggplot2)
+library(tidyr)
+
+test_data <-
+  data.frame(
+    var0 = 100 + c(0, cumsum(runif(49, -20, 20))),
+    var1 = 150 + c(0, cumsum(runif(49, -10, 10))),
+    date = seq(as.Date("2002-01-01"), by="1 month", length.out=100)
+  )
+test_data %>%
+    gather(key,value, var0, var1) %>%
+    ggplot(aes(x=date, y=value, colour=key)) +
+    geom_line()
+
+#TRY THIS  from https://plotly.com/ggplot2/geom_count/
+ggplot(flightdata, aes(y=airline, x=dest, colour = dest, group=airport)) +
+  geom_count(alpha=0.5) +
+  labs(title = "Flights from New York to major domestic destinations",
+       x = "Origin and destination",
+       y = "Airline",
+       size = "")
+
+remove first 5 rows:  
+newRatio <- currentratio[5:45,]
+
+rowNumbers <- subset(data, jobCategory=="farmer")
+
+use dplyr to subset
+library(dplyr)
+newData <- select(filter(data, jobCategory=="doctor"),c(columns, you, want, here))
+
+countif: sum(data$sex == "M", na.rm=TRUE)
+countifs: sum(data$sex == "M" &  data$obSjobCategory =="doctor")
+or:   table(data$sex, data$jobCategory)
+
+cumsum(x[!is.na(x)]). Ignores NAs in x
+
+unique(data$sex)
+
+# if extra levels
+data$sex <- factor(data$sex)
+
+# plot age by decile group. breaks needs to be one longer than labels
+ageBreaks <- c(20,30,40,50,60,70,80,100)
+ageDecileLabels <- c("20-29","30-39","40-49","50-59","60-69","70-79","80-89+")
+allDeciles <- cut(x=data$age, breaks=ageBreaks,right=F,labels=ageDecileLabels)
+
+# order factors:
+q1Labels <- ordered(c("None", "Mild", "Moderate", "Severe"))
+
+#set order to be that in dataframe:
+#Turn your 'treatment' column into a character vector
+data$Treatment <- as.character(data$Treatment)
+#Then turn it back into a factor with the levels in the correct order
+data$Treatment <- factor(data$Treatment, levels=unique(data$Treatment))
+
+# plot results by count
+ggplot(data, aes(x=allDeciles, fill=sex)) + geom_bar(stat="count", position=position_dodge())
+
+# change backgrounds:
+https://www.datanovia.com/en/blog/ggplot-theme-background-color-and-grids/
+
+# kill little grid lines:
+theme(panel.grid.minor =   element_blank())
+
+HCW data:
+tidy incoming data: 
+data <- HCWs_200505[2:163,]  chooses rows 2 to 163, all columns
+remove column: data$X <- NULL
+Dates <- as.Date(data$date, "%d/%m/%Y")
+
+export: 
+write.table(mydata, "c:/mydata.txt", sep="\t")
+
+
+add data cumulatively: newData <- cumsum(data)
+
+select rows containing factor: which(data$jobCategory == "doctor")
+subset rows containing factor: doctors <- data[which(data$jobCategory=="doctor"),]
+
+clear all data: rm(list = ls())
+find unique values: unique(data$Sex)
+
+
+install.packages(c("ggplot2"))
+# plotrix for interrupted y axis - axis.break(axis=1,breakpos=NULL,pos=NULL,bgcol="white",breakcol="black",
+  style="slash",brw=0.02)
+
+colourblind palette:
+cbPalette <- c("#999999", "#E69F00", "56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+NHS palette: blue #005EB8, yellow #FFB81C, grey #425563, red #FF0000
+
+
+table
+library(ggplot2)
+
+# subset:
+doctors <- CSV20 [which(CSV20$role == "doctor"),]
+
+DOD <- factor (cases$date, levels = c("21/03/2020", "25/03/2020", "26/03/2020", "27/03/2020", "28/03/2020", "29/03/2020", "30/03/2020", "31/03/2020", "01/04/2020", "02/04/2020", "03/04/2020", "04/04/2020", "05/04/2020", "06/04/2020", "07/04/2020", "08/04/2020", "09/04/2020", "10/04/2020", "11/04/2020", "12/04/2020", "13/04/2020", "14/04/2020", "15/04/2020", "16/04/2020", "17/04/2020", "18/04/2020", "19/04/2020", "20/04/2020", "21/04/2020", "22/04/2020", "23/04/2020", "24/04/2020", "25/04/2020", "26/04/2020", "27/04/2020", "28/04/2020", "29/04/2020", "30/04/2020", "31/04/2020", "01/05/2020", "02/05/2020"))
+
+better: 
+cDates <- as.Date(cumulative$date, "%d/%m/%Y")
+
+
+ggplot(data=cumulativeDate_200504, aes(x=cDates, y=total)) +geom_line() +geom_point() + theme(axis.text.x = element_text(angle = 90)) + labs(x = "date", y = "deaths") 
+
+facets:
+ggplot(data=TimeRole_200502, aes(x=cDates, y=deaths)) +geom_line() +geom_point() + theme(axis.text.x = element_text(angle = 90)) + labs(x = "date", y = "deaths") + facet_wrap(~ CovidDeathsTimeRole_200502$role)
+
+blue backgrounds:
++ theme(panel.background = element_rect(fill = "#edf5fc", colour = "#6D9EC1"))
+
+
+ie:
+ggplot(data=CovidDeathsTimeRole_200502, aes(x=cDates, y=deaths)) +geom_line() +geom_point() + theme(axis.text.x = element_text(angle = 90)) + labs(x = "date", y = "deaths") + facet_wrap(~ CovidDeathsTimeRole_200502$role) + theme(panel.background = element_rect(fill = "#edf5fc", colour = "#6D9EC1"))
+
++ theme_gray() also light, minimal, classic, void (no background) + theme_void()
+
+multiple lines with colours and legend (colour in aes is a label, picked up by S_C_manual):
+ggplot() + geom_line(data=survey, aes(x=surveyDates, y=shielding, colour="shielding"), size=1) + geom_line(data=survey, aes(x=surveyDates,y=socialDistancing, colour = "distancing"), size=1) + geom_line(data=survey, aes(x=surveyDates,y=normal, color = "normal"), size=1) + ylab("percent of respondents")+xlab("date") + scale_colour_manual(values = c("shielding" = "darkgreen", "distancing" = "red", "normal" = "blue"))
+
+smooth out wonky graphs
+ggplot(data=newRatio, aes(x=rDates, y=BAME)) +geom_smooth(span = 0.8) +geom_point() + theme(axis.text.x = element_text(angle = 90)) + labs(x = "date", y = "proportion BAME") 
+
+ggplot(data =cases, aes(x=DOD, fill=Ethnicity)) +geom_bar(stat="count", position = position_stack()) + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual(values=cbPalette)
+
+ggplot(data =individuals200418, aes(x=orderedDate, fill=ethnicity)) +geom_bar(stat="count", position = position_stack()) + theme(axis.text.x = element_text(angle = 90))
+
+ggplot(data =individuals200418, aes(x=orderedDate, fill=gender)) +geom_bar(stat="count", position = position_stack()) + theme(axis.text.x = element_text(angle = 90)) + scale_fill_brewer(palette="Pastel1") + labs(x = "date", y = "count") 
+
+ggplot(NULL, aes(x=NHS_deaths_covid$Ethnicity, y=NHS_deaths_covid$Rates, fill=NHS_deaths_covid$X)) + geom_bar(stat = "identity", position = position_dodge()) + scale_fill_brewer(palette="Spectral") + labs(x = "Ethnicity", y = "%")
+
+ggplot(NULL, aes(x=HCW$Ethnicity, y=HCW$Rates, fill=HCW$Type)) + geom_bar(stat = "identity", position = "dodge")CSV
+
+group.colors <- c(Deaths = "#FF794D", Workforce = "#005EB8")
+
+sector.colours <- c(NHS = "#005EB8", other = "#B8005E", SC = "#5EB800") # NHS & complimentary
++ scale_fill_manual(values=sector.colours)
+
+
++ theme(axis.text.x = element_text(angle = 90))  # to put labels vertically on x axis
+
+sum(df$sex == 'M', na.rm=TRUE) only counts if not N/A
+
+correct one cell: data.frame[row, column] = "newdata"
+
+ggplot(NULL, aes(x=HCW$Ethnicity, y=HCW$Rates, fill=Key)) + geom_bar(stat = "identity", position = "dodge") + geom_text(aes(label=HCW$Rates), position = position_dodge(width = 0.8), vjust =1.5)  + labs(x = "Ethnicity", y = "%") + scale_fill_manual(values=group.colors)
+
+HCW$Ethnicity <- factor (HCW$Ethnicity, levels = c("White", "Black", "Asian", "Mixed", "Chinese", "Other"))  # sets order of factors
+
+in csv set numbers there, makes it easier to import
+
++ guides(fill=FALSE) # removes fill legend completely
+
+each session:
+library(ggplot2)
+library(gcookbook)
+
+data <- read.csv("/home/doris/Desktop/covid/survey/200403/surveyResultshome.csv", header=TRUE, stringsAsFactors=FALSE) 
+
+> names(data)
+
+days <- as.numeric(data$days[c(1:19)]) # removes header, does next 18 rows
+fever <- as.numeric(data$febrile[c(1:19)])
+
+fever <- fever * 100  # to get ratios into percent
+or do both:
+
+isoOthers <- as.numeric(data$isoOthers[c(1:19)]) * 100
+
+hist(fever)  gives numbers of each value so useless
+plot(days, fever)  better
+
+reorder bar graph highest at L ggplot(data =CSV20, aes(x=reorder(birth, -table(birth)[birth]))) +geom_bar(stat="count", position = position_stack(), fill = "#005EB8") + theme(axis.text.x = element_text(angle = 90)) + labs(x = "Country of birth", y = "count")  + geom_text(stat='count', aes(label=..count..), vjust=-0.7)  
+
+ggplot(NULL, aes(x=days, y=fever)) + geom_bar(stat="identity")  #   better still
+
+ggplot(NULL, aes(x=days, y=fever)) + geom_bar(stat="identity", fill="#008080")
+
+ggplot(NULL, aes(x=days, y=fever)) + geom_bar(stat="identity", fill="#008080")  + geom_errorbar(aes(ymin=lower,ymax=upper),width=0.2)  # shows error bars
+
+ggplot(NULL, aes(x=days, y=fever)) + geom_bar(stat="identity", fill="#008080") + geom_text(aes(label=fever), vjust =1.5) # adds value to bar graph
+
+ggplot(NULL, aes(x=days, y=fever)) + geom_bar(stat="identity", fill="#008080") + geom_text(aes(label=fever), vjust =1.5) + labs(y = "%age reporting fever") # adds labels
+
+ggplot(NULL, aes(x=days, y=fever)) + geom_bar(stat="identity", fill="red") + geom_text(aes(label=fever), vjust =1.5) + labs(x = "date", y = "%age reporting fever") + scale_x_continuous(breaks=c(0,5,10,15),labels=c("16/3","21/3","26/3","31/1"))
+
+ggplot(NULL, aes(x=days, y=percent, fill=home)) + geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) + scale_fill_brewer(palette="Pastel1") + labs(x = "date", y = "%age of respondents") + scale_x_continuous(breaks=c(0,5,10,15),labels=c("16/3","21/3","26/3","31/1"))
+
+
+geom_bar(stat = "identity", position = position_stack(reverse = TRUE))   worked to reverse order of graph
+
+
+ggplot(NULL, aes(x=days, y=percent, fill=home)) + geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) + scale_fill_brewer(palette="Spectral") + labs(x = "date", y = "% of respondents") + scale_x_continuous(breaks=c(0,5,10,15),labels=c("16/3","21/3","26/3","31/1")) + annotate(geom = "text", x=7, y=18, label="lockdown announced", angle = 90, colour = "black")
+
+
+Tdata$sex <- revalue(Tdata$sex, c("F" = "f"))  # changes F to f
+sum(Tdata$sex == 'm', na.rm=TRUE) # counts m, ignores missing rows
+age <- as.numeric(as.character(Tdata$age))  # converts factor to numeric
+
+for(i in 1:length(age)) {
+    print(age[i])
+} # prints all values of that vector
+
+for(i in 1:length(age)) {                          # error checks & excludes NAs
++     if (!is.na(age[i])){
++     if (age[i] <= 30){
++     print("true")
++         print(i)
++     } else {}
++     }
++ }
+
+ageClean <- age[!is.na(age)] # removes NAs
+
+
+decileBreaks <- c(20,30,40,50,60,70,80,90,100)
+decilesData <- cut(x=age, breaks=decileBreaks,right=F)
+table(decilesData)
+
+ decilesResults <- as.data.frame(table(decilesData))
+ggplot(NULL, aes(x=decilesResults$decilesData, y=decilesResults$Freq)) + geom_bar(stat="identity")
+
+sum(a$sex == "M" & a$occupation=="A") counts M with occupation "A"
+
+rank into deciles:
+library(dplyr)
+df1 = mutate(mydata, decile_rank = ntile(mydata$mpg,10))
+
+
+https://stackoverflow.com/questions/26114525/how-to-count-how-many-values-per-level-in-a-given-factor#26114852
+dat %>% 
+  group_by(ID) %>%
+  summarise(no_rows = length(ID))
+
+
+UK <- map_data(map = "world", region = "UK") # changed map to "world"
+ggplot(data = UK, aes(x = long, y = lat, group = group)) + 
+  geom_polygon() +
+  coord_map()
